@@ -1,0 +1,64 @@
+---
+title: "HW4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Inspiration for Table
+The first time that I knitted an R file with a table on it (as a printed table) was years ago, but I still remember not entirely liking the look of it. The main reason was it displayed several tables and they were really ugly - so much so that I felt it almost undermined the credibility of the analysis. Because of that, I wanted to create as professional looking a table as possible.
+
+### Data Source
+Data for this table was collected from the following source:
+
+https://www.imf.org/en/Research/commodity-prices
+
+### Data Prep
+```{r}
+library(readxl)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+```
+
+```{r}
+commodityPrices <- read_excel('C:/Users/Jeffrey/Desktop/My Documents/Grad School/Classes/Fall 2022/Staa 566/HW4/Commodity Prices.xlsx')	
+commodityPrices <- data.frame(commodityPrices)
+```
+
+### Functionality and Formatting Reasoning:
+The main goal for the funcationality and formatting of this table was to appear professional and be as useful as possible. To maintain the professional look,after trying to get it to work and make it look good, I decided against adding additional color. I also wanted to keep the index commodities and single commodities clearly separated. To do this I added a border between them, after grouping the indexes and the individual commodity prices together. I felt separating the date with a border also improved the table.
+
+While maintaining the professional look, I still wanted to add some functionality you could only get with a computer. The most needed thing was a scroll bar, because the data was so long. I then made it so the row the mouse is over highlighted gray. Furthermore I added code to create popovers for the index columns so that users could read the full name of the index that was being shown.
+
+
+```{r}
+df <- commodityPrices %>% 
+  select(Date, BeveragePriceIndex, IndustrialInputsPriceIndex, AgriculturalRawMaterialsIndex, MetalsPriceIndex, Beef, Coal, Wheat) %>%
+  kbl(
+    caption = "Commodity Prices Over Time",
+    col.names = c("Date", "Bvrg.", "Ind.", "Agr.", "Metals", "Beef", "Coal", "Wheat")
+    , centering = TRUE
+    , align = c("l","c","c","c","c","c","c","c")
+    , digits = 2
+  ) %>%
+  add_header_above(c(" ", "Indexes" = 4, "Specific Commodities" = 3)) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>%
+  column_spec(1, border_right = TRUE) %>%
+  column_spec(2, popover = "Beverage Price") %>%
+  column_spec(3, popover = "IndustrialI nputs Price") %>%
+  column_spec(4, popover = "Agricultural Raw Materials") %>%
+  column_spec(5, popover = "Metals Price") %>%
+  column_spec(5, border_right = TRUE) %>%
+  scroll_box(width = "700px", height = "300px", fixed_thead = T)
+
+df 
+```
+
+### Goals of the Display
+The main goal of the display is to simply display data in professional looking manner. To make a table that would build confidence in the reader's mind that what data is being displayed is trustworthy and accurate. Beyond this, I wanted to be able to display lots of price numbers, in a condensed space, but still make the table pleasing to look at and most importantly still useful.
+
